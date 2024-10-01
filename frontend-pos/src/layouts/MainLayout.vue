@@ -4,11 +4,7 @@
       <Navbar></Navbar>
       <Sidebar></Sidebar>
       <div class="content-wrapper">
-        <section class="content">
-          <div class="container-fluid">
-            <router-view></router-view>
-          </div>
-        </section>
+        <router-view></router-view>
       </div>
       <Footer></Footer>
       <ControlSidebar></ControlSidebar>

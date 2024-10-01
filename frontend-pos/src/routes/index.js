@@ -3,12 +3,13 @@ import auth from "./authRouter";
 import dashboard from "./dashboard"
 import users from "./users";
 import admin from "./adminRouter";
+import superAdmin from "./superAdminRouter";
 import cashier from "./cashierRouter";
 import error from "./errorRouter";
 import { useAuthStore } from '../stores/auth'
 import axios from '../plugins/axios'
 
-const routes = [...auth, ...dashboard, ...users, ...admin, ...cashier, ...error]
+const routes = [...auth, ...dashboard, ...users, ...admin, ...cashier, ...error, ...superAdmin]
 
 const router = createRouter({
     history: createWebHistory(),
@@ -38,7 +39,14 @@ router.beforeEach((to, from, next) => {
 
     if (to.meta.requiresRoleAdmin) {
         if (userAuth.role == 'Super Admin' || userAuth.role == 'Admin') {
-            console.log(userAuth.role)
+            next()
+        } else {
+            next('/404')
+        }
+    }
+
+    if (to.meta.requiresRoleSuperAdmin) {
+        if (userAuth.role == 'Super Admin') {
             next()
         } else {
             next('/404')
@@ -47,7 +55,6 @@ router.beforeEach((to, from, next) => {
 
     if (to.meta.requiresRoleCashier) {
         if (userAuth.role != 'Cashier') {
-            console.log('not permited')
             next('/404')
         }
     }

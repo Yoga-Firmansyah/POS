@@ -98,7 +98,6 @@ export default {
             timer: 5000,
             buttons: false,
           });
-          //redirect ke halaman dashboard
           return router.push({
             name: "home",
           });

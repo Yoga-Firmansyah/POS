@@ -16,7 +16,7 @@ class ProductController extends Controller
      */
     public function index()
     {
-        $products = Product::orderBy('name')->get();
+        $products = Product::with('category')->orderBy('name')->get();
         return response()->json([
             'success'       => true,
             'message'       => 'List Data Products',
@@ -45,6 +45,7 @@ class ProductController extends Controller
             'purchase_price' => 'required|numeric',
             'sale_price' => 'required',
             'discount' => 'nullable|numeric',
+            'qty' => 'nullable|numeric',
         ]);
 
         if ($validator->fails()) {
@@ -61,6 +62,7 @@ class ProductController extends Controller
                     'purchase_price' => $request->purchase_price,
                     'sale_price' => $request->sale_price,
                     'discount' => $request->discount,
+                    'qty' => $request->qty,
                 ]);
 
                 return response()->json([
@@ -82,8 +84,9 @@ class ProductController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Product $product)
+    public function show($code)
     {
+        $product = Product::where('code', $code)->get();
         return response()->json([
             'success' => true,
             'message' => 'Data Edit Product',
@@ -94,9 +97,13 @@ class ProductController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(Product $product)
     {
-        //
+        return response()->json([
+            'success' => true,
+            'message' => 'Data Edit Product',
+            'data'    => $product
+        ]);
     }
 
     /**
@@ -112,6 +119,7 @@ class ProductController extends Controller
             'purchase_price' => 'required|numeric',
             'sale_price' => 'required',
             'discount' => 'nullable|numeric',
+            'qty' => 'nullable|numeric',
         ]);
 
         if ($validator->fails()) {
@@ -126,6 +134,7 @@ class ProductController extends Controller
                         'purchase_price' => $request->purchase_price,
                         'sale_price' => $request->sale_price,
                         'discount' => $request->discount,
+                        'qty' => $request->qty,
                     ]);
                 } else {
                     Storage::disk('local')->delete('public/products/' . basename($product->image));
@@ -139,6 +148,7 @@ class ProductController extends Controller
                         'purchase_price' => $request->purchase_price,
                         'sale_price' => $request->sale_price,
                         'discount' => $request->discount,
+                        'qty' => $request->qty,
                     ]);
                 }
 

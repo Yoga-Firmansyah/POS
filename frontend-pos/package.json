@@ -9,10 +9,18 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@chenfengyuan/vue-barcode": "^2.0.2",
+    "@coders-tm/vue-number-format": "^3.34.1",
+    "@jamescoyle/vue-icon": "^0.1.2",
+    "@mdi/js": "^7.4.47",
+    "@teckel/vue-barcode-reader": "^1.1.7",
     "axios": "^1.7.7",
+    "jsbarcode": "^3.11.6",
     "pinia": "^2.2.2",
     "vue": "^3.4.37",
     "vue-axios": "^3.5.2",
+    "vue-barcode-reader": "^1.0.3",
+    "vue-money-format": "^1.2.4",
     "vue-router": "^4.4.5"
   },
   "devDependencies": {

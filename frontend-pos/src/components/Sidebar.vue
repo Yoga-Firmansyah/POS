@@ -47,17 +47,57 @@
             >
           </li>
 
-          <li class="nav-item">
+          <li class="nav-item" v-if="role == 'Admin' || role == 'Super Admin'">
             <RouterLink
-              :to="{ name: 'profile' }"
-              :class="$route.name == 'profile' ? 'active' : ''"
+              :to="{ name: 'categories' }"
+              :class="$route.name == 'categories' ? 'active' : ''"
               class="nav-link"
             >
-              <i class="nav-icon fas fa-th"></i>
-              <p>Profile</p></RouterLink
+              <i class="nav-icon fas fa-th-list"></i>
+              <p>Categories</p></RouterLink
+            >
+          </li>
+          <li class="nav-item" v-if="role == 'Admin' || role == 'Super Admin'">
+            <RouterLink
+              :to="{ name: 'products' }"
+              :class="$route.name == 'products' ? 'active' : ''"
+              class="nav-link"
+            >
+              <i class="nav-icon fas fa-shopping-bag"></i>
+              <p>Products</p></RouterLink
+            >
+          </li>
+          <li class="nav-item" v-if="role == 'Admin' || role == 'Super Admin'">
+            <RouterLink
+              :to="{ name: 'purchases' }"
+              :class="$route.name == 'purchases' ? 'active' : ''"
+              class="nav-link"
+            >
+              <i class="nav-icon fas fa-store"></i>
+              <p>Purchases</p></RouterLink
             >
           </li>
           <li class="nav-item">
+            <RouterLink
+              :to="{ name: 'sales' }"
+              :class="$route.name == 'sales' ? 'active' : ''"
+              class="nav-link"
+            >
+              <i class="nav-icon fas fa-shopping-cart"></i>
+              <p>Sale</p></RouterLink
+            >
+          </li>
+          <li class="nav-item" v-if="role == 'Super Admin'">
+            <RouterLink
+              :to="{ name: 'users' }"
+              :class="$route.name == 'users' ? 'active' : ''"
+              class="nav-link"
+            >
+              <i class="nav-icon fas fa-users"></i>
+              <p>Users</p></RouterLink
+            >
+          </li>
+          <!-- <li class="nav-item">
             <a href="#" class="nav-link">
               <i class="nav-icon fas fa-tree"></i>
               <p>
@@ -91,7 +131,7 @@
                 </a>
               </li>
             </ul>
-          </li>
+          </li> -->
         </ul>
       </nav>
       <!-- /.sidebar-menu -->
@@ -109,6 +149,7 @@ export default {
 
     //state user
     const user = computed(() => userAuth.user);
+    const role = computed(() => userAuth.role);
 
     //mounted properti
     onMounted(() => {
@@ -116,6 +157,7 @@ export default {
     });
     return {
       user,
+      role
     };
   },
 };

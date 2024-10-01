@@ -8,10 +8,19 @@ export const useUsersStore = defineStore('users', () => {
     function getUsers() {
         axios.get('/users')
             .then(response => {
-                user.value = response.data.user
-                role.value = response.data.user.roles.name
+                users.value = response.users
             })
     }
 
-    return { users, getUsers }
+    function deleteUser(userId) {
+        axios.delete(`/users/${userId}`)
+            .then(() => {
+                axios.get('/users')
+                    .then(response => {
+                        users.value = response.users
+                    })
+            })
+    }
+
+    return { users, getUsers, deleteUser }
 })

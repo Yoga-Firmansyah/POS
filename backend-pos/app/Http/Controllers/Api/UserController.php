@@ -7,6 +7,7 @@ use App\Models\User;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Spatie\Permission\Models\Role;
 
 class UserController extends Controller
 {
@@ -15,12 +16,12 @@ class UserController extends Controller
      */
     public function index()
     {
-        $users = User::orderBy('name')->get();
+        $users = User::with('roles')->orderBy('name')->get();
         return response()->json([
             'success'       => true,
             'message'       => 'List Data Users',
-            'users'    => $users
-        ]);
+            'users'    => $users,
+        ], 200);
     }
 
     /**
@@ -39,7 +40,8 @@ class UserController extends Controller
         $validator = Validator::make($request->all(), [
             'name'  => 'required',
             'email' => 'required|email|unique:users',
-            'password'   => 'required|confirmed'
+            'password'   => 'required|confirmed',
+            'role'  => 'required',
         ]);
 
         if ($validator->fails()) {
@@ -51,6 +53,8 @@ class UserController extends Controller
                     'email'  => $request->email,
                     'password'  => bcrypt($request->password),
                 ]);
+                $user->assignRole($request->role);
+                $user->roles;
                 return response()->json([
                     'success' => true,
                     'message' => 'Data Saved Successfully!',
@@ -79,6 +83,7 @@ class UserController extends Controller
      */
     public function edit(User $user)
     {
+        $user->hasExactRoles(Role::all());
         return response()->json([
             'success' => true,
             'message' => 'Data Edit User',
@@ -94,13 +99,15 @@ class UserController extends Controller
         $validator = Validator::make($request->all(), [
             'name'      => 'required',
             'email'     => 'required|email|unique:users,email,' . $user->id,
-            'password'  => 'nullable|confirmed'
+            'password'  => 'nullable|confirmed',
+            'role'  => 'required',
         ]);
 
         if ($validator->fails()) {
             return response()->json($validator->errors(), 422);
         } else {
             try {
+                $user->hasExactRoles(Role::all());
                 if ($request->password == "") {
                     $user->update([
                         'name'   => $request->name,
@@ -113,6 +120,12 @@ class UserController extends Controller
                         'password'  => bcrypt($request->password),
                     ]);
                 }
+                $roles = $user->roles;
+                foreach ($roles as $role) {
+                    $user->removeRole($role);
+                }
+                $user->assignRole($request->role);
+                $user->roles;
                 return response()->json([
                     'success' => true,
                     'message' => 'Data Saved Successfully!',
@@ -144,5 +157,15 @@ class UserController extends Controller
                 'message' => $exception->errorInfo[2]
             ], 500);
         }
+    }
+
+    public function getRoles()
+    {
+        $allRolesInDatabase = Role::all()->pluck('name');
+        return response()->json([
+            'success'       => true,
+            'message'       => 'List Data Users',
+            'roles'    => $allRolesInDatabase,
+        ], 200);
     }
 }
